@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Forever The Fittest â Free Weight-Loss Starter Guide</title>
+<style>
+  :root { --brand:#0d7a5f; --brand-dark:#0a5f49; --bg:#f5f6f3; --text:#1d2a23; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--text); line-height:1.5; }
+  .wrap { max-width:560px; margin:0 auto; padding:32px 20px 64px; }
+  header { text-align:center; margin-bottom:24px; }
+  .logo { display:inline-block; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--brand); font-size:14px; }
+  h1 { font-size:30px; margin:12px 0 8px; line-height:1.2; }
+  .sub { color:#4a5a52; margin:0 0 8px; font-size:17px; }
+  .card { background:#fff; border-radius:14px; padding:24px; box-shadow:0 1px 3px rgba(0,0,0,.06); margin-top:20px; }
+  label { display:block; font-weight:600; font-size:14px; margin:14px 0 6px; }
+  input, select, textarea { width:100%; padding:12px 14px; border:1px solid #d4dcd7; border-radius:10px; font-size:15px; font-family:inherit; background:#fff; }
+  textarea { min-height:96px; resize:vertical; }
+  input:focus, select:focus, textarea:focus { outline:none; border-color:var(--brand); box-shadow:0 0 0 3px rgba(13,122,95,.15); }
+  button { width:100%; background:var(--brand); color:#fff; font-weight:700; font-size:16px; padding:14px; border:0; border-radius:10px; margin-top:18px; cursor:pointer; }
+  button:hover { background:var(--brand-dark); }
+  button:disabled { opacity:.6; cursor:wait; }
+  .tiny { font-size:12px; color:#6a7770; margin-top:10px; text-align:center; }
+  .success { background:#e7f5ef; border:1px solid var(--brand); color:var(--brand-dark); padding:18px; border-radius:10px; text-align:center; font-weight:600; }
+  .success a { color:var(--brand-dark); }
+  .hidden { display:none; }
+  ul.benefits { margin:12px 0 0; padding-left:18px; color:#3a4a43; font-size:15px; }
+  ul.benefits li { margin:4px 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo">Forever The Fittest</div>
+    <h1>Lose 20â30 lbs without blowing up your schedule</h1>
+    <p class="sub">Get the free starter guide + see if our 12-week coaching is a fit.</p>
+  </header>
+
+  <div class="card" id="form-card">
+    <ul class="benefits">
+      <li>5 busy-person weight-loss tips (PDF)</li>
+      <li>Science-backed, sustainable, no crash diets</li>
+      <li>Optional free discovery call with Coach Michael</li>
+    </ul>
+    <form id="lead-form" novalidate>
+      <label for="first_name">First name</label>
+      <input id="first_name" name="first_name" required autocomplete="given-name">
+
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" required autocomplete="email">
+
+      <label for="goal">Biggest weight-loss goal</label>
+      <select id="goal" name="goal" required>
+        <option value="" disabled selected>Choose oneâ¦</option>
+        <option value="lose 20-30 lbs">Lose 20â30 lbs</option>
+        <option value="lose 30+ lbs">Lose 30+ lbs</option>
+        <option value="maintain">Maintain my current weight</option>
+        <option value="other">Other</option>
+      </select>
+
+      <label for="obstacle">What's your #1 obstacle right now?</label>
+      <textarea id="obstacle" name="obstacle" placeholder="e.g. no time after work, emotional eating, stop-start cyclesâ¦" required></textarea>
+
+      <label for="phone">Phone (optional)</label>
+      <input id="phone" name="phone" type="tel" autocomplete="tel">
+
+      <button type="submit" id="btn">Send me the free guide</button>
+      <div class="tiny">We'll email the PDF plus a short 6-email coaching series. Unsubscribe anytime.</div>
+    </form>
+  </div>
+
+  <div class="card success hidden" id="success-card">
+    You're in â check your inbox in the next couple of minutes for your free starter guide.<br><br>
+    Ready to skip the line? <a href="https://calendly.com/nursesigsbury/30min">Book your free discovery call â</a>
+  </div>
+</div>
+
+<script>
+  const WEBHOOK = "https://build.twin.so/triggers/d2e1265d-2aaa-4336-813e-cf118ba85865/webhook";
+  const form = document.getElementById('lead-form');
+  const btn = document.getElementById('btn');
+  const formCard = document.getElementById('form-card');
+  const successCard = document.getElementById('success-card');
+
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    btn.disabled = true;
+    btn.textContent = 'Sendingâ¦';
+    const data = {
+      first_name: form.first_name.value.trim(),
+      email: form.email.value.trim().toLowerCase(),
+      goal: form.goal.value,
+      obstacle: form.obstacle.value.trim(),
+      phone: form.phone.value.trim(),
+      source: 'landing_page',
+      signed_up_at: new Date().toISOString()
+    };
+    try {
+      await fetch(WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      formCard.classList.add('hidden');
+      successCard.classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (err) {
+      btn.disabled = false;
+      btn.textContent = 'Send me the free guide';
+      alert('Sorry, something went wrong. Please try again.');
+    }
+  });
+</script>
+</body>
+</html>
